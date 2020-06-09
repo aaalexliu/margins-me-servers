@@ -32,17 +32,18 @@ output "db_port" {
 
 resource "local_file" "lambda-env" {
   sensitive_content = <<-EOT
-  POSTGRES_DB=${module.rds.this_db_instance_name}
-  POSTGRES_USER=${module.rds.this_db_instance_username}
-  POSTGRES_PASSWORD=${module.rds.this_db_instance_password}
+  POSTGRES_DB="${module.rds.this_db_instance_name}"
+  POSTGRES_USER="${module.rds.this_db_instance_username}"
+  POSTGRES_PASSWORD="${module.rds.this_db_instance_password}"
 
-  DATABASE_URL=\"postgres://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@localhost:5432/$${POSTGRES_DB}\"
-  DATABASE_ENDPOINT=${module.rds.this_db_instance_endpoint}
+  DATABASE_URL="postgres://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@localhost:5432/$${POSTGRES_DB}"
+  DATABASE_ENDPOINT="${module.rds.this_db_instance_endpoint}"
 
-  AWS_VPC_SECURITY_GROUP_IDS=${module.vpc.vpc_id}
-  AWS_VPC_SUBNET_IDS=${module.vpc.database_subnets}
+  AWS_VPC_SECURITY_GROUP_IDS="${module.ping_sg.this_security_group_id}"
+  AWS_VPC_SUBNET_IDS="${join(",", module.vpc.database_subnets)}"
 
   EOT
 
-  filename = "${path.module}/../margins-me-serverless-resources/services/graphql-lambda/.env"
+  filename = abspath("${path.module}/../margins-me-serverless-resources/services/graphql-lambda/.db-env")
+  # filename = "${path.module}/temp"
 }
