@@ -18,8 +18,9 @@ module "vpc" {
   database_subnets = var.vpc_database_subnets
   public_subnets   = var.vpc_public_subnets
   
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  # getting charged for it, don't need it for now
+  # enable_nat_gateway = true
+  # single_nat_gateway = true
 
   # VPC endpoint for S3
   enable_s3_endpoint = true
@@ -96,7 +97,7 @@ module "rds" {
   allocated_storage = 20
   storage_encrypted = false
 
-  name="start"
+  name="startdb"
 
   username = "postgres"
 
@@ -105,7 +106,8 @@ module "rds" {
 
   vpc_security_group_ids = [module.postgresql_sg.this_security_group_id]
 
-  db_subnet_group_name	= module.vpc.database_subnet_group
+  # db_subnet_group_name	= module.vpc.database_subnet_group
+  subnet_ids = module.vpc.database_subnets
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"

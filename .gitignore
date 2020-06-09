@@ -12,3 +12,4 @@
 # example.tfvars
 
 psql-command
+.env
